@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { pusher } from "../../../../services/pusher";
 import { Tally } from "../../../../hooks/useTally";
 import { MongoClient } from "mongodb";
+import Pusher from "pusher";
 
 export default async function handler(
   req: NextApiRequest,
@@ -12,6 +12,15 @@ export default async function handler(
   }
 
   const client = new MongoClient(process.env.CONNECTION_STRING!);
+
+  const pusher = new Pusher({
+    appId: process.env.PUSHER_APPID!,
+    key: process.env.PUSHER_KEY!,
+    secret: process.env.PUSHER_SECRET!,
+    cluster: process.env.PUSHER_CLUSTER!,
+    useTLS: true,
+  });
+
   try {
     await client.connect();
     const database = client.db();
@@ -29,13 +38,12 @@ export default async function handler(
       { returnDocument: "after" }
     );
 
-    pusher.trigger(
-      `tally-${req.query.tallyId}`,
-      "update",
-      (({ id, count, lastUpdate }) => ({ id, count, lastUpdate }))(
+    pusher.trigger(`tally-${req.query.tallyId}`, "update", {
+      ...(({ id, count, lastUpdate }) => ({ id, count, lastUpdate }))(
         result.value as Tally
-      )
-    );
+      ),
+      clientId: JSON.parse(req.body).clientId,
+    });
   } finally {
     client.close();
   }

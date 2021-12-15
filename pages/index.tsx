@@ -63,7 +63,7 @@ export const CreateTally: FC = () => {
             className="bg-emerald-500 p-2 m-4 text-white dark:text-black text-2xl font-semibold rounded-md ring-1 ring-gray-900/5"
             size="lg"
           >
-            Let's go!
+            Let&apos;s go!
           </Button>
         </div>
       </form>

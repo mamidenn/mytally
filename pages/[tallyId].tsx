@@ -27,7 +27,7 @@ const Error: FC = () => {
 
 const Tally: FC = () => {
   const router = useRouter();
-  const tallyId = router.query.tallyId as string;
+  const tallyId = router.query.tallyId as string | undefined;
   const shareLink = `${process.env.REACT_APP_BASE_URL}${tallyId}`;
   const { tally, increment, decrement, reset, onReconnecting, onReconnected } =
     useTally(tallyId);

@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Pusher from "pusher-js";
 import useSwr from "swr";
-
-Pusher.logToConsole = true;
+import { v4 as uuid } from "uuid";
 
 export interface Tally {
   id: string;
@@ -10,14 +9,17 @@ export interface Tally {
   lastUpdate: Date;
 }
 
-export const useTally = (id: string) => {
-  const { data: remoteTally } = useSwr<Tally>(`api/tally/${id}`, (uri) =>
-    fetch(uri).then((res) => res.json())
+export const useTally = (id: string | undefined) => {
+  const { data: remoteTally } = useSwr<Tally>(
+    "api/tally/" + id,
+    (uri) => (id ? fetch(uri).then((res) => res.json()) : Promise.reject()),
+    { refreshInterval: 15000 }
   );
   const [tally, setTally] = useState<Tally>();
   const onReconnecting = useRef((error?: Error | undefined) => {});
   const onReconnected = useRef(() => {});
   const [pusher, setPusher] = useState<Pusher>();
+  const clientId = useRef(uuid());
 
   useEffect(() => {
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
@@ -33,11 +35,17 @@ export const useTally = (id: string) => {
   useEffect(() => {
     if (pusher && id) {
       const channel = pusher.subscribe(`tally-${id}`);
-      channel.bind("update", (tally: Tally) => {
-        setTally(tally);
+      channel.bind("update", (t: Tally & { clientId: string }) => {
+        if (
+          t.clientId !== clientId.current &&
+          tally &&
+          tally?.lastUpdate < t.lastUpdate
+        ) {
+          setTally(t);
+        }
       });
     }
-  }, [pusher, id]);
+  }, [pusher, id, tally]);
 
   useEffect(() => {
     setTally(remoteTally);
@@ -45,17 +53,26 @@ export const useTally = (id: string) => {
 
   const increment = async () => {
     setTally((t) => t && { ...t, count: t.count + 1 });
-    fetch(`api/tally/${id}/increment`, { method: "POST" });
+    fetch(`api/tally/${id}/increment`, {
+      method: "POST",
+      body: JSON.stringify({ clientId: clientId.current }),
+    });
   };
 
   const decrement = async () => {
     setTally((t) => t && { ...t, count: Math.max(0, t.count - 1) });
-    fetch(`api/tally/${id}/decrement`, { method: "POST" });
+    fetch(`api/tally/${id}/decrement`, {
+      method: "POST",
+      body: JSON.stringify({ clientId: clientId.current }),
+    });
   };
 
   const reset = async () => {
     setTally((t) => t && { ...t, count: 0 });
-    fetch(`api/tally/${id}/reset`, { method: "POST" });
+    fetch(`api/tally/${id}/reset`, {
+      method: "POST",
+      body: JSON.stringify({ clientId: clientId.current }),
+    });
   };
 
   return {
