@@ -10,10 +10,8 @@ export interface Tally {
 }
 
 export const useTally = (id: string | undefined) => {
-  const { data: remoteTally } = useSwr<Tally>(
-    "api/tally/" + id,
-    (uri) => (id ? fetch(uri).then((res) => res.json()) : Promise.reject()),
-    { refreshInterval: 15000 }
+  const { data: remoteTally } = useSwr<Tally>("api/tally/" + id, (uri) =>
+    id ? fetch(uri).then((res) => res.json()) : Promise.reject()
   );
   const [tally, setTally] = useState<Tally>();
   const onReconnecting = useRef((error?: Error | undefined) => {});
