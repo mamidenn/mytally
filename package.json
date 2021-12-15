@@ -8,15 +8,30 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mdi/js": "^6.5.95",
+    "@mdi/react": "^1.5.0",
+    "classnames": "^2.3.1",
+    "mongodb": "^4.2.2",
     "next": "12.0.7",
+    "pusher": "^5.0.0",
+    "pusher-js": "^7.0.3",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-copy-to-clipboard": "^5.0.4",
+    "react-dom": "17.0.2",
+    "react-spinners": "^0.11.0",
+    "swr": "^1.1.2-beta.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/node": "16.11.13",
     "@types/react": "17.0.37",
+    "@types/react-copy-to-clipboard": "^5.0.2",
+    "@types/uuid": "^8.3.3",
+    "autoprefixer": "^10.4.0",
     "eslint": "8.4.1",
     "eslint-config-next": "12.0.7",
+    "postcss": "^8.4.5",
+    "tailwindcss": "^3.0.5",
     "typescript": "4.5.4"
   }
 }
