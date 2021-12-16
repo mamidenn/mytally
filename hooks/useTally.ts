@@ -59,12 +59,14 @@ export const useTally = (id: string | undefined) => {
   };
 
   const decrement = async () => {
-    setTally((t) => t && { ...t, count: Math.max(0, t.count - 1) });
-    fetch(`api/tally/${id}/decrement`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ clientId: clientId.current }),
-    });
+    if (tally && tally.count > 0) {
+      setTally((t) => t && { ...t, count: t.count - 1 });
+      fetch(`api/tally/${id}/decrement`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clientId: clientId.current }),
+      });
+    }
   };
 
   const reset = async () => {

@@ -17,38 +17,34 @@ export default async function handler(
   console.timeEnd("connect");
 
   const tallies = client.db().collection("tallies");
-  const filter = { id: req.query.tallyId };
+  const filter = { id: req.query.tallyId, count: { $gt: 0 } };
 
-  console.time("find");
-  //TODO make atomic
-  const tally = await tallies.findOne<Tally>(filter);
-  console.timeEnd("find");
-
-  if (tally && tally.count > 0) {
-    console.time("update");
-    const result = await tallies.findOneAndUpdate(
-      filter,
-      {
-        $set: {
-          lastUpdate: new Date(),
-        },
-        $inc: { count: -1 },
+  console.time("update");
+  const result = await tallies.findOneAndUpdate(
+    filter,
+    {
+      $set: {
+        lastUpdate: new Date(),
       },
-      { returnDocument: "after" }
-    );
-    console.timeEnd("update");
+      $inc: { count: -1 },
+    },
+    { returnDocument: "after" }
+  );
+  console.timeEnd("update");
 
-    console.time("push");
-    await pusher.trigger(`tally-${req.query.tallyId}`, "update", {
-      ...(({ id, count, lastUpdate }) => ({ id, count, lastUpdate }))(
-        result.value as Tally
-      ),
-      clientId: req.body.clientId,
-    });
-    console.timeEnd("push");
-
-    res.status(200).send(null);
-  } else {
+  if (!result.value) {
     res.status(404).send(null);
+    return;
   }
+
+  console.time("push");
+  await pusher.trigger(`tally-${req.query.tallyId}`, "update", {
+    ...(({ id, count, lastUpdate }) => ({ id, count, lastUpdate }))(
+      result.value as Tally
+    ),
+    clientId: req.body.clientId,
+  });
+  console.timeEnd("push");
+
+  res.status(200).send(null);
 }
