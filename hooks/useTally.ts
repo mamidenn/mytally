@@ -53,6 +53,7 @@ export const useTally = (id: string | undefined) => {
     setTally((t) => t && { ...t, count: t.count + 1 });
     fetch(`api/tally/${id}/increment`, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ clientId: clientId.current }),
     });
   };
@@ -61,6 +62,7 @@ export const useTally = (id: string | undefined) => {
     setTally((t) => t && { ...t, count: Math.max(0, t.count - 1) });
     fetch(`api/tally/${id}/decrement`, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ clientId: clientId.current }),
     });
   };
@@ -69,6 +71,7 @@ export const useTally = (id: string | undefined) => {
     setTally((t) => t && { ...t, count: 0 });
     fetch(`api/tally/${id}/reset`, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ clientId: clientId.current }),
     });
   };

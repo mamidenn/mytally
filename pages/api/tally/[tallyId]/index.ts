@@ -1,6 +1,6 @@
-import { MongoClient } from "mongodb";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Tally } from "../../../../hooks/useTally";
+import { clientPromise } from "../../../../modules/mongodb";
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,30 +10,35 @@ export default async function handler(
     res.status(404).send(null);
     return;
   }
-  const client = new MongoClient(process.env.CONNECTION_STRING!);
-  try {
-    await client.connect();
-    const database = client.db();
-    const tallies = database.collection("tallies");
-    const filter = { id: req.query.tallyId };
 
-    const result = await tallies.findOne<Tally>(filter);
-    if (result) {
-      res
-        .status(200)
-        .json(
-          (({ id, count, lastUpdate }) => ({ id, count, lastUpdate }))(result)
-        );
-    } else {
-      const tally = {
-        id: req.query.tallyId,
-        count: 0,
-        lastUpdate: new Date(),
-      };
-      await tallies.insertOne(tally);
-      res.status(200).json(tally);
-    }
-  } finally {
-    client.close();
+  console.time("connect");
+  const client = await clientPromise;
+  console.timeEnd("connect");
+
+  const tallies = client.db().collection("tallies");
+  const filter = { id: req.query.tallyId };
+
+  console.time("find");
+  const result = await tallies.findOne<Tally>(filter);
+  console.timeEnd("find");
+
+  if (result) {
+    res
+      .status(200)
+      .json(
+        (({ id, count, lastUpdate }) => ({ id, count, lastUpdate }))(result)
+      );
+  } else {
+    const tally = {
+      id: req.query.tallyId,
+      count: 0,
+      lastUpdate: new Date(),
+    };
+
+    console.time("insert");
+    await tallies.insertOne(tally);
+    console.timeEnd("insert");
+
+    res.status(200).json(tally);
   }
 }
