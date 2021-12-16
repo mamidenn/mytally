@@ -5,7 +5,9 @@ import { Toasts } from "../components/Toasts";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Toasts>
-      <Component {...pageProps} />
+      <div className="text-black bg-white dark:text-white dark:bg-black">
+        <Component {...pageProps} />
+      </div>
     </Toasts>
   );
 }
