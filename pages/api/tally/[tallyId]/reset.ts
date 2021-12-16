@@ -38,12 +38,16 @@ export default async function handler(
       { returnDocument: "after" }
     );
 
-    pusher.trigger(`tally-${req.query.tallyId}`, "update", {
-      ...(({ id, count, lastUpdate }) => ({ id, count, lastUpdate }))(
-        result.value as Tally
-      ),
-      clientId: JSON.parse(req.body).clientId,
-    });
+    try {
+      await pusher.trigger(`tally-${req.query.tallyId}`, "update", {
+        ...(({ id, count, lastUpdate }) => ({ id, count, lastUpdate }))(
+          result.value as Tally
+        ),
+        clientId: JSON.parse(req.body).clientId,
+      });
+    } catch (e) {
+      console.error(e);
+    }
   } finally {
     client.close();
   }
