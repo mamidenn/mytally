@@ -1,7 +1,7 @@
-import { MongoClient } from "mongodb";
 import type { NextApiRequest, NextApiResponse } from "next";
-import Pusher from "pusher";
 import { Tally } from "../../../../hooks/useTally";
+import { clientPromise } from "../../../../modules/mongodb";
+import { pusher } from "../../../../modules/pusher";
 
 export default async function handler(
   req: NextApiRequest,
@@ -12,51 +12,43 @@ export default async function handler(
     return;
   }
 
-  const client = new MongoClient(process.env.CONNECTION_STRING!);
+  console.time("connect");
+  const client = await clientPromise;
+  console.timeEnd("connect");
 
-  const pusher = new Pusher({
-    appId: process.env.PUSHER_APPID!,
-    key: process.env.PUSHER_KEY!,
-    secret: process.env.PUSHER_SECRET!,
-    cluster: process.env.PUSHER_CLUSTER!,
-    useTLS: true,
-  });
+  const tallies = client.db().collection("tallies");
+  const filter = { id: req.query.tallyId };
 
-  try {
-    await client.connect();
-    const database = client.db();
-    const tallies = database.collection("tallies");
-    const filter = { id: req.query.tallyId };
+  console.time("find");
+  //TODO make atomic
+  const tally = await tallies.findOne<Tally>(filter);
+  console.timeEnd("find");
 
-    //TODO make atomic
-    const tally = await tallies.findOne<Tally>(filter);
-
-    if (tally && tally.count > 0) {
-      const result = await tallies.findOneAndUpdate(
-        filter,
-        {
-          $set: {
-            lastUpdate: new Date(),
-          },
-          $inc: { count: -1 },
+  if (tally && tally.count > 0) {
+    console.time("update");
+    const result = await tallies.findOneAndUpdate(
+      filter,
+      {
+        $set: {
+          lastUpdate: new Date(),
         },
-        { returnDocument: "after" }
-      );
+        $inc: { count: -1 },
+      },
+      { returnDocument: "after" }
+    );
+    console.timeEnd("update");
 
-      try {
-        await pusher.trigger(`tally-${req.query.tallyId}`, "update", {
-          ...(({ id, count, lastUpdate }) => ({ id, count, lastUpdate }))(
-            result.value as Tally
-          ),
-          clientId: JSON.parse(req.body).clientId,
-        });
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  } finally {
-    await client.close();
+    console.time("push");
+    await pusher.trigger(`tally-${req.query.tallyId}`, "update", {
+      ...(({ id, count, lastUpdate }) => ({ id, count, lastUpdate }))(
+        result.value as Tally
+      ),
+      clientId: req.body.clientId,
+    });
+    console.timeEnd("push");
+
+    res.status(200).send(null);
+  } else {
+    res.status(404).send(null);
   }
-
-  res.status(200).send(null);
 }
