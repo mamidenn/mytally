@@ -25,24 +25,17 @@ export const TallyCard: FC<TallyCardProps> = ({ tallyId, onTally }) => {
   const { tally, increment, decrement, reset, onReconnecting, onReconnected } =
     useTally(tallyId);
   const [advanced, setAdvanced] = useState(false);
-  const { showToast, dismissToast } = useContext(ToastContext);
   const [disabled, setDisabled] = useState(false);
-  const reconnectingToastId = useRef("");
+  const { showToast } = useContext(ToastContext);
 
   useEffect(() => {
     onReconnecting.current = () => {
       setDisabled(true);
-      reconnectingToastId.current = showToast({
-        children: "Reconnecting...",
-        type: "warning",
-      });
     };
     onReconnected.current = () => {
       setDisabled(false);
-      dismissToast(reconnectingToastId.current);
-      showToast({ children: "Reconnected!", duration: 5000 });
     };
-  }, [showToast, dismissToast, onReconnected, onReconnecting]);
+  }, [onReconnected, onReconnecting]);
 
   useEffect(() => {
     onTally && onTally(tally);

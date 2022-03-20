@@ -1,5 +1,12 @@
 import classNames from "classnames";
-import { createContext, FC, ReactNode, useEffect, useState } from "react";
+import {
+  createContext,
+  FC,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { v4 as uuid } from "uuid";
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
@@ -57,15 +64,15 @@ export const Toasts: FC = (props) => {
     }
   }, [toasts]);
 
-  const showToast = (toast: ToastProps) => {
+  const showToast = useCallback((toast: ToastProps) => {
     const newToast = { ...toast, id: uuid() };
     setToasts((toasts) => [...toasts, newToast]);
     return newToast.id;
-  };
+  }, []);
 
-  const dismissToast = (id: string) => {
+  const dismissToast = useCallback((id: string) => {
     setToasts((toasts) => toasts.filter((t) => t.id !== id));
-  };
+  }, []);
 
   return (
     <>

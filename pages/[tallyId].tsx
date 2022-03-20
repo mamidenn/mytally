@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import { Tally } from "../hooks/useTally";
 import { TallyCard } from "../components/TallyCard";
+import { Pusher } from "../components/Pusher";
 
 const TallyPage: FC = () => {
   const router = useRouter();
@@ -17,11 +18,13 @@ const TallyPage: FC = () => {
           tally counters
         </title>
       </Head>
-      <div className="flex justify-center items-center h-screen">
-        {tallyId && (
-          <TallyCard tallyId={tallyId} onTally={(t) => setTally(t)} />
-        )}
-      </div>
+      <Pusher>
+        <div className="flex justify-center items-center h-screen">
+          {tallyId && (
+            <TallyCard tallyId={tallyId} onTally={(t) => setTally(t)} />
+          )}
+        </div>
+      </Pusher>
     </>
   );
 };

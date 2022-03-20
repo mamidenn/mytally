@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import Pusher from "pusher-js";
+import { useContext, useEffect, useRef } from "react";
 import useSwr, { useSWRConfig } from "swr";
 import axios from "axios";
+import { PusherContext } from "../components/Pusher";
 
 export interface Tally {
   id: string;
@@ -17,24 +17,13 @@ export const useTally = (id: string | undefined) => {
   );
   const onReconnecting = useRef((error?: Error | undefined) => {});
   const onReconnected = useRef(() => {});
-  const [pusher, setPusher] = useState<Pusher>();
-  const [socketId, setSocketId] = useState<string>();
+  const { pusher, socketId } = useContext(PusherContext);
 
   useEffect(() => {
-    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
-      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
-    });
-    pusher.connection.bind("connected", () => {
-      setSocketId(pusher.connection.socket_id);
-      onReconnected.current();
-    });
+    if (!pusher) return;
+    pusher.connection.bind("connected", onReconnected.current);
     pusher.connection.bind("connecting", onReconnecting.current);
-    setPusher(pusher);
-
-    return () => {
-      pusher.disconnect();
-    };
-  }, []);
+  }, [pusher]);
 
   useEffect(() => {
     if (pusher && id) {
