@@ -26,7 +26,9 @@ export const useTally = (id: string | undefined) => {
     });
     pusher.connection.bind("connected", () => {
       setSocketId(pusher.connection.socket_id);
+      onReconnected.current();
     });
+    pusher.connection.bind("connecting", onReconnecting.current);
     setPusher(pusher);
 
     return () => {
