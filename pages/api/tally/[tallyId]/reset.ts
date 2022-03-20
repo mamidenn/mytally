@@ -9,6 +9,7 @@ export default async function handler(
 ) {
   if (req.method != "POST") {
     res.status(400).send(null);
+    return;
   }
 
   console.time("connect");
@@ -36,6 +37,8 @@ export default async function handler(
     return;
   }
 
+  res.status(200).send(null);
+
   console.time("push");
   await pusher.trigger(`tally-${req.query.tallyId}`, "update", {
     ...(({ id, count, lastUpdate }) => ({ id, count, lastUpdate }))(
@@ -44,6 +47,4 @@ export default async function handler(
     clientId: req.body.clientId,
   });
   console.timeEnd("push");
-
-  res.status(200).send(null);
 }
