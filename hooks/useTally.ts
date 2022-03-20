@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Pusher from "pusher-js";
 import useSwr, { useSWRConfig } from "swr";
-import { v4 as uuid } from "uuid";
 
 export interface Tally {
   id: string;
@@ -17,11 +16,14 @@ export const useTally = (id: string | undefined) => {
   const onReconnecting = useRef((error?: Error | undefined) => {});
   const onReconnected = useRef(() => {});
   const [pusher, setPusher] = useState<Pusher>();
-  const clientId = useRef(uuid());
+  const [socketId, setSocketId] = useState<string>();
 
   useEffect(() => {
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
       cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
+    });
+    pusher.connection.bind("connected", () => {
+      setSocketId(pusher.connection.socket_id);
     });
     setPusher(pusher);
 
@@ -33,12 +35,8 @@ export const useTally = (id: string | undefined) => {
   useEffect(() => {
     if (pusher && id) {
       const channel = pusher.subscribe(`tally-${id}`);
-      channel.bind("update", (t: Tally & { clientId: string }) => {
-        if (
-          t.clientId !== clientId.current &&
-          tally &&
-          tally?.lastUpdate < t.lastUpdate
-        ) {
+      channel.bind("update", (t: Tally) => {
+        if (tally && tally?.lastUpdate < t.lastUpdate) {
           mutate("api/tally/" + id, t, false);
         }
       });
@@ -51,7 +49,7 @@ export const useTally = (id: string | undefined) => {
       fetch(`api/tally/${id}/increment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clientId: clientId.current }),
+        body: JSON.stringify({ socketId: socketId }),
       });
     }
   };
@@ -62,7 +60,7 @@ export const useTally = (id: string | undefined) => {
       fetch(`api/tally/${id}/decrement`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clientId: clientId.current }),
+        body: JSON.stringify({ socketId: socketId }),
       });
     }
   };
@@ -72,7 +70,7 @@ export const useTally = (id: string | undefined) => {
     fetch(`api/tally/${id}/reset`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ clientId: clientId.current }),
+      body: JSON.stringify({ socketId: socketId }),
     });
   };
 

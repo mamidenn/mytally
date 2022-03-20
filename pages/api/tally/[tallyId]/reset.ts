@@ -37,12 +37,18 @@ export default async function handler(
   }
 
   console.time("push");
-  await pusher.trigger(`tally-${req.query.tallyId}`, "update", {
-    ...(({ id, count, lastUpdate }) => ({ id, count, lastUpdate }))(
-      result.value as Tally
-    ),
-    clientId: req.body.clientId,
-  });
+  await pusher.trigger(
+    `tally-${req.query.tallyId}`,
+    "update",
+    {
+      ...(({ id, count, lastUpdate }) => ({ id, count, lastUpdate }))(
+        result.value as Tally
+      ),
+    },
+    {
+      socket_id: req.body.socketId,
+    }
+  );
   console.timeEnd("push");
 
   res.status(200).send(null);
