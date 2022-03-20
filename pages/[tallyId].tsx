@@ -7,22 +7,18 @@ import { Pusher } from "../components/Pusher";
 
 const TallyPage: FC = () => {
   const router = useRouter();
-  const tallyId = router.query.tallyId as string | undefined;
-  const [tally, setTally] = useState<Tally>();
+  const tallyIds = (router.query.tallyId as string)?.split("+");
 
   return (
     <>
-      <Head>
-        <title>
-          {tally && tally?.count + " | " + tally?.id + " | "}myTally - shared
-          tally counters
-        </title>
-      </Head>
       <Pusher>
-        <div className="flex justify-center items-center h-screen">
-          {tallyId && (
-            <TallyCard tallyId={tallyId} onTally={(t) => setTally(t)} />
-          )}
+        <div className="flex justify-center min-h-screen">
+          <div className="flex flex-col justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 py-8">
+              {tallyIds &&
+                tallyIds.map((id) => <TallyCard key={id} tallyId={id} />)}
+            </div>
+          </div>
         </div>
       </Pusher>
     </>

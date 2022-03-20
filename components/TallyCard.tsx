@@ -47,6 +47,7 @@ export const TallyCard: FC<TallyCardProps> = ({ tallyId, onTally }) => {
         <Error />
       ) : (
         <>
+          {tally?.id}
           <TallyCounter
             tally={tally?.count}
             disabled={disabled}
