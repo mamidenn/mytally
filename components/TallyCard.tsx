@@ -42,12 +42,14 @@ export const TallyCard: FC<TallyCardProps> = ({ tallyId, onTally }) => {
   }, [onTally, tally]);
 
   return (
-    <div className="flex flex-col items-center bg-white dark:bg-gray-800 shadow-xl ring-1 ring-gray-900/5 rounded-lg pb-12 pt-4 px-8 w-80">
+    <div className="flex flex-col items-center bg-white dark:bg-gray-800 shadow-xl ring-1 ring-gray-900/5 rounded-lg pb-8 w-80">
       {tallyId && !tallyId.match("^[a-zA-Z0-9]{1,16}$") ? (
         <Error />
       ) : (
         <>
-          {tally?.id}
+          <div className="w-full bg-gray-50 dark:bg-gray-700 text-center py-2 text-lg text-gray-400 dark:text-gray-900 rounded-t-lg">
+            {tally?.id}
+          </div>
           <TallyCounter
             tally={tally?.count}
             disabled={disabled}
