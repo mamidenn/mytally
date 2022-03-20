@@ -48,7 +48,7 @@ export const TallyCard: FC<TallyCardProps> = ({ tallyId, onTally }) => {
       ) : (
         <>
           <div className="w-full bg-gray-50 dark:bg-gray-700 text-center py-2 text-lg text-gray-400 dark:text-gray-900 rounded-t-lg">
-            {tally?.id}
+            {tally?.id ?? "Loading..."}
           </div>
           <TallyCounter
             tally={tally?.count}
