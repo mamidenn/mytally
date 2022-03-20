@@ -7,7 +7,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (!(req.query.tallyId as string).match("^[a-zA-Z0-9]{1,16}$")) {
-    res.status(404).send(null);
+    res.status(404).json(null);
     return;
   }
 

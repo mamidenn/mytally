@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Pusher from "pusher-js";
 import useSwr, { useSWRConfig } from "swr";
+import axios from "axios";
 
 export interface Tally {
   id: string;
@@ -10,8 +11,9 @@ export interface Tally {
 
 export const useTally = (id: string | undefined) => {
   const { mutate } = useSWRConfig();
-  const { data: tally } = useSwr<Tally>(id ? "api/tally/" + id : null, (uri) =>
-    fetch(uri).then((res) => res.json())
+  const { data: tally } = useSwr<Tally>(
+    id ? "api/tally/" + id : null,
+    async (uri) => (await axios.get(uri)).data
   );
   const onReconnecting = useRef((error?: Error | undefined) => {});
   const onReconnected = useRef(() => {});
@@ -43,35 +45,23 @@ export const useTally = (id: string | undefined) => {
     }
   }, [pusher, id, tally, mutate]);
 
-  const increment = async () => {
+  const increment = () => {
     if (tally) {
       mutate("api/tally/" + id, { ...tally, count: tally.count + 1 }, false);
-      fetch(`api/tally/${id}/increment`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ socketId: socketId }),
-      });
+      axios.post(`api/tally/${id}/increment`, { socketId: socketId });
     }
   };
 
-  const decrement = async () => {
+  const decrement = () => {
     if (tally && tally.count > 0) {
       mutate("api/tally/" + id, { ...tally, count: tally.count - 1 }, false);
-      fetch(`api/tally/${id}/decrement`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ socketId: socketId }),
-      });
+      axios.post(`api/tally/${id}/decrement`, { socketId: socketId });
     }
   };
 
-  const reset = async () => {
+  const reset = () => {
     mutate("api/tally/" + id, { ...tally, count: 0 }, false);
-    fetch(`api/tally/${id}/reset`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ socketId: socketId }),
-    });
+    axios.post(`api/tally/${id}/reset`, { socketId: socketId });
   };
 
   return {

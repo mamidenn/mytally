@@ -8,7 +8,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method != "POST") {
-    res.status(400).send(null);
+    res.status(400).json(null);
   }
 
   console.time("connect");
@@ -32,7 +32,7 @@ export default async function handler(
   console.timeEnd("update");
 
   if (!result.value) {
-    res.status(404).send(null);
+    res.status(404).json(null);
     return;
   }
 
@@ -51,5 +51,5 @@ export default async function handler(
   );
   console.timeEnd("push");
 
-  res.status(200).send(null);
+  res.status(200).json(null);
 }
