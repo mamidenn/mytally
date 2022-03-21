@@ -13,7 +13,7 @@ const TallyPage: FC = () => {
 
   return (
     <>
-      {tallyIds?.length == 1 && (
+      {tallyIds?.length == 1 && titleTally && (
         <Head>
           <title>
             {titleTally?.count} | {titleTally?.id} | myTally - shared tally
