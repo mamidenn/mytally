@@ -1,19 +1,35 @@
 import classNames from "classnames";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { FC, FormEventHandler, useEffect, useState } from "react";
 import Button from "../components/Button";
+import { randomInt } from "crypto";
+import { range } from "lodash";
 
-export const CreateTally: FC = () => {
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {
+      randomId: range(8).reduce(
+        (c, _) => (c += randomInt(36).toString(36)),
+        ""
+      ),
+    },
+  };
+};
+
+export const CreateTally: FC<{ randomId: string }> = ({ randomId }) => {
   const [tallyId, setTallyId] = useState("");
   const [isValid, setIsValid] = useState(true);
   const [submitted, setSubmitted] = useState(false);
   const router = useRouter();
   const onSubmit: FormEventHandler = (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    if (isValid) {
-      router.push(tallyId);
+    if (!tallyId) {
+      router.push(randomId);
+      return;
     }
+    setSubmitted(true);
+    if (isValid) router.push(tallyId);
   };
 
   useEffect(() => {
@@ -35,7 +51,7 @@ export const CreateTally: FC = () => {
             <input
               type="text"
               value={tallyId}
-              placeholder="mytally"
+              placeholder={randomId}
               onChange={(e) => {
                 setTallyId(e.target.value);
               }}
