@@ -22,27 +22,22 @@ const TallyPage: FC = () => {
         </Head>
       )}
       <Pusher>
-        <div className="flex justify-center min-h-screen">
-          <div className="flex flex-col justify-center">
-            {tallyIds && (
-              <div
-                className={classNames(
-                  "grid gap-8 py-8 grid-cols-1 ",
-                  [`md:grid-cols-${Math.min(tallyIds.length, 2)}`],
-                  [`lg:grid-cols-${Math.min(tallyIds.length, 3)}`],
-                  [`xl:grid-cols-${Math.min(tallyIds.length, 4)}`]
-                )}
-              >
-                {tallyIds.map((id) => (
-                  <TallyCard
-                    key={id}
-                    tallyId={id}
-                    onTally={(t) => tallyIds.length == 1 && setTitleTally(t)}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
+        <div className="container mx-auto flex flex-col justify-center min-h-screen">
+          {tallyIds && (
+            <div
+              className={classNames(
+                "mx-8 grid gap-8 py-8 justify-items-center grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] "
+              )}
+            >
+              {tallyIds.map((id) => (
+                <TallyCard
+                  key={id}
+                  tallyId={id}
+                  onTally={(t) => tallyIds.length == 1 && setTitleTally(t)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </Pusher>
     </>
