@@ -5,11 +5,13 @@ import { Tally } from "../hooks/useTally";
 import { TallyCard } from "../components/TallyCard";
 import { Pusher } from "../components/Pusher";
 import classNames from "classnames";
+import Button from "../components/Button";
 
 const TallyPage: FC = () => {
   const router = useRouter();
   const tallyIds = (router.query.tallyId as string)?.split("+");
   const [titleTally, setTitleTally] = useState<Tally>();
+  const [addtlId, setAddtlId] = useState<string>();
 
   return (
     <>
@@ -36,6 +38,26 @@ const TallyPage: FC = () => {
                   onTally={(t) => tallyIds.length == 1 && setTitleTally(t)}
                 />
               ))}
+              <div className="w-80 border-2 border-dashed rounded-lg flex justify-center">
+                <form className="flex flex-col justify-center">
+                  <input
+                    type="text"
+                    className="bg-transparent border-b-2 w-full outline-none focus:border-emerald-500 rounded-none text-center"
+                    onChange={(e) => setAddtlId(e.target.value)}
+                  ></input>
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="bg-emerald-500 p-2 m-4 text-white dark:text-black text-lg font-semibold rounded-md ring-1 ring-gray-900/5"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      router.push(`${tallyIds.join("+")}+${addtlId}`);
+                    }}
+                  >
+                    Add
+                  </Button>
+                </form>
+              </div>
             </div>
           )}
         </div>
