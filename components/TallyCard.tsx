@@ -10,10 +10,10 @@ import Icon from "@mdi/react";
 import classNames from "classnames";
 import React, { FC, useContext, useEffect, useRef, useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
-import { Tally, useTally } from "../hooks/useTally";
-import Button from "./Button";
-import TallyCounter from "./TallyCounter";
-import { ToastContext } from "./Toasts";
+import { Tally, useTally } from "hooks/useTally";
+import Button from "components/Button";
+import TallyCounter from "components/TallyCounter";
+import { ToastContext } from "components/Toasts";
 
 interface TallyCardProps {
   tallyId: string;

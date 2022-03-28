@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { FC, FormEventHandler, useEffect, useState } from "react";
-import Button from "../components/Button";
+import Button from "components/Button";
 import { randomInt } from "crypto";
 import { range } from "lodash";
 

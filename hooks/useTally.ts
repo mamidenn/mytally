@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef } from "react";
 import useSwr, { useSWRConfig } from "swr";
 import axios from "axios";
-import { PusherContext } from "../components/Pusher";
+import { PusherContext } from "components/Pusher";
 
 export interface Tally {
   id: string;

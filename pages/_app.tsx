@@ -1,6 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { Toasts } from "../components/Toasts";
+import { Toasts } from "components/Toasts";
 import Head from "next/head";
 
 function MyApp({ Component, pageProps }: AppProps) {
