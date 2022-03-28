@@ -1,11 +1,11 @@
 import React, { FC, useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { Tally } from "../hooks/useTally";
-import { TallyCard } from "../components/TallyCard";
-import { Pusher } from "../components/Pusher";
+import { Tally } from "hooks/useTally";
+import { TallyCard } from "components/TallyCard";
+import { Pusher } from "components/Pusher";
 import classNames from "classnames";
-import Button from "../components/Button";
+import Button from "components/Button";
 
 const TallyPage: FC = () => {
   const router = useRouter();

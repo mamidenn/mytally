@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Tally } from "../../../../hooks/useTally";
-import { clientPromise } from "../../../../modules/mongodb";
+import { Tally } from "hooks/useTally";
+import { clientPromise } from "modules/mongodb";
 
 export default async function handler(
   req: NextApiRequest,
