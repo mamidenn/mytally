@@ -21,7 +21,11 @@ const TallyPage: FC = () => {
   const onSubmit: FormEventHandler = (e) => {
     e.preventDefault();
     setSubmitted(true);
-    if (isValid) router.push(`${tallyIds.join("+")}+${addtlId}`);
+    if (isValid) {
+      router.push(`${tallyIds.join("+")}+${addtlId}`);
+      setSubmitted(false);
+      setAddtlId("");
+    }
   };
 
   useEffect(() => {
