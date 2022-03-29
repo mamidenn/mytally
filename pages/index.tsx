@@ -1,10 +1,10 @@
-import classNames from "classnames";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { FC, FormEventHandler, useEffect, useState } from "react";
 import Button from "components/Button";
 import { randomInt } from "crypto";
 import { range } from "lodash";
+import TextInput from "components/TextInput";
 
 export const getServerSideProps: GetServerSideProps = async () => {
   return {
@@ -48,29 +48,14 @@ export const CreateTally: FC<{ randomId: string }> = ({ randomId }) => {
         <div className="flex basis-full text-3xl m-4">
           <p>mytally.de/</p>
           <div className="basis-full">
-            <input
-              type="text"
-              value={tallyId}
+            <TextInput
               placeholder={randomId}
-              onChange={(e) => {
-                setTallyId(e.target.value);
-              }}
+              onChange={(e) => setTallyId(e.target.value)}
               minLength={1}
               maxLength={16}
-              className={classNames(
-                "bg-transparent border-b-2 w-full outline-none focus:border-emerald-500 rounded-none",
-                {
-                  "border-red-500": !isValid && submitted,
-                }
-              )}
+              showError={submitted && !isValid}
+              errorMessage="Your Tally ID must be 1-16 characters and/or numbers."
             />
-            <p
-              className={classNames("text-sm text-red-500", {
-                invisible: isValid || !submitted,
-              })}
-            >
-              Your Tally ID must be 1-16 characters and/or numbers.
-            </p>
           </div>
         </div>
         <div className="text-right shrink-0">
