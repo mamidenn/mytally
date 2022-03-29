@@ -9,3 +9,4 @@ export const getRandomId = () =>
 
 export const minLength = 1;
 export const maxLength = 16;
+export const validationMessage = `Your Tally ID must be ${minLength}-${maxLength} characters and/or numbers.`;
