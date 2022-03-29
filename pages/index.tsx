@@ -2,21 +2,14 @@ import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { FC, FormEventHandler, useEffect, useState } from "react";
 import Button from "components/Button";
-import { randomInt } from "crypto";
-import { range } from "lodash";
 import TextInput from "components/TextInput";
-import { validateId } from "modules/tally";
+import { getRandomId, validateId } from "modules/tally";
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  return {
-    props: {
-      randomId: range(8).reduce(
-        (c, _) => (c += randomInt(36).toString(36)),
-        ""
-      ),
-    },
-  };
-};
+export const getServerSideProps: GetServerSideProps = async () => ({
+  props: {
+    randomId: getRandomId(),
+  },
+});
 
 export const CreateTally: FC<{ randomId: string }> = ({ randomId }) => {
   const [tallyId, setTallyId] = useState("");
