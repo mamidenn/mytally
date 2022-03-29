@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { FC, FormEventHandler, useEffect, useState } from "react";
 import Button from "components/Button";
 import TextInput from "components/TextInput";
-import { getRandomId, validateId } from "modules/tally";
+import { getRandomId, maxLength, minLength, validateId } from "modules/tally";
 
 export const getServerSideProps: GetServerSideProps = async () => ({
   props: {
@@ -45,10 +45,10 @@ export const CreateTally: FC<{ randomId: string }> = ({ randomId }) => {
             <TextInput
               placeholder={randomId}
               onChange={(e) => setTallyId(e.target.value)}
-              minLength={1}
-              maxLength={16}
+              minLength={minLength}
+              maxLength={maxLength}
               showError={submitted && !isValid}
-              errorMessage="Your Tally ID must be 1-16 characters and/or numbers."
+              errorMessage={`Your Tally ID must be ${minLength}-${maxLength} characters and/or numbers.`}
             />
           </div>
         </div>
