@@ -16,10 +16,11 @@ export const TextInput: FC<
         type="text"
         {...props}
         className={classNames(
-          "bg-transparent border-b-2 w-full outline-none focus:border-emerald-500 rounded-none",
+          "bg-transparent border-b-2 dark:border-gray-500 w-full outline-none focus:border-emerald-500 rounded-none",
           {
             "border-red-500": showError,
             "focus:border-red-500": showError,
+            "dark:border-red-500": showError,
           },
           props.className
         )}

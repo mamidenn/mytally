@@ -43,7 +43,7 @@ const TallyPage: FC = () => {
           {tallyIds && (
             <div
               className={classNames(
-                "mx-8 grid gap-8 py-8 justify-items-center grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] "
+                "mx-8 grid gap-8 py-8 justify-items-center grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] auto-rows-fr"
               )}
             >
               {tallyIds.map((id) => (
@@ -53,16 +53,16 @@ const TallyPage: FC = () => {
                   onTally={(t) => tallyIds.length == 1 && setTitleTally(t)}
                 />
               ))}
-              <div className="w-80 border-2 border-dashed rounded-lg flex justify-center">
-                <form
-                  className="flex flex-col justify-center"
-                  onSubmit={onSubmit}
-                >
+              <div className="flex flex-col justify-between w-80 border-2 border-dashed border-gray-200 dark:border-gray-500 rounded-lg">
+                <div className="w-full text-center py-2 text-gray-400 dark:text-gray-500 font-medium">
+                  Add tally
+                </div>
+                <form className="flex flex-col p-12" onSubmit={onSubmit}>
                   <TextInput
                     type="text"
                     minLength={minLength}
                     maxLength={maxLength}
-                    className="text-center"
+                    className="text-center text-2xl"
                     onChange={(e) => setAddtlId(e.target.value)}
                     showError={submitted && !isValid}
                     errorMessage={validationMessage}
