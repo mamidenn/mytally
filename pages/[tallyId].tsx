@@ -2,11 +2,8 @@ import React, { FC, useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { Tally } from "hooks/useTally";
-import { TallyCard } from "components/TallyCard";
-import { Pusher } from "components/Pusher";
 import classNames from "classnames";
-import Button from "components/Button";
-import TextInput from "components/TextInput";
+import { Button, Pusher, TallyCard, TextInput } from "components";
 import { maxLength, minLength } from "modules/tally";
 
 const TallyPage: FC = () => {

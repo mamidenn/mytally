@@ -1,8 +1,7 @@
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { FC, FormEventHandler, useEffect, useState } from "react";
-import Button from "components/Button";
-import TextInput from "components/TextInput";
+import { Button, TextInput } from "components";
 import { getRandomId, maxLength, minLength, validateId } from "modules/tally";
 
 export const getServerSideProps: GetServerSideProps = async () => ({
