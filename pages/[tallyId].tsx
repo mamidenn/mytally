@@ -1,4 +1,10 @@
-import React, { FC, FormEventHandler, useEffect, useState } from "react";
+import React, {
+  FC,
+  FormEventHandler,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { Tally } from "hooks/useTally";
@@ -13,7 +19,13 @@ import {
 
 const TallyPage: FC = () => {
   const router = useRouter();
-  const tallyIds = (router.query.tallyId as string)?.split("+");
+  const tallyIds = useMemo(
+    () =>
+      Array.from(
+        new Set((router.query.tallyId as string)?.split("+").filter((e) => e))
+      ),
+    [router.query.tallyId]
+  );
   const [titleTally, setTitleTally] = useState<Tally>();
   const [addtlId, setAddtlId] = useState<string>("");
   const [isValid, setIsValid] = useState<boolean>();
@@ -67,6 +79,7 @@ const TallyPage: FC = () => {
                     minLength={minLength}
                     maxLength={maxLength}
                     className="text-center text-2xl"
+                    value={addtlId}
                     onChange={(e) => setAddtlId(e.target.value)}
                     showError={submitted && !isValid}
                     errorMessage={validationMessage}
