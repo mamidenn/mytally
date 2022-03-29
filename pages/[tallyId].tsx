@@ -6,6 +6,8 @@ import { TallyCard } from "components/TallyCard";
 import { Pusher } from "components/Pusher";
 import classNames from "classnames";
 import Button from "components/Button";
+import TextInput from "components/TextInput";
+import { maxLength, minLength } from "modules/tally";
 
 const TallyPage: FC = () => {
   const router = useRouter();
@@ -40,11 +42,13 @@ const TallyPage: FC = () => {
               ))}
               <div className="w-80 border-2 border-dashed rounded-lg flex justify-center">
                 <form className="flex flex-col justify-center">
-                  <input
+                  <TextInput
                     type="text"
-                    className="bg-transparent border-b-2 w-full outline-none focus:border-emerald-500 rounded-none text-center"
+                    minLength={minLength}
+                    maxLength={maxLength}
+                    className="text-center"
                     onChange={(e) => setAddtlId(e.target.value)}
-                  ></input>
+                  ></TextInput>
                   <Button
                     type="submit"
                     size="lg"

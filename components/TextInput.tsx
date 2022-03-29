@@ -20,7 +20,8 @@ export const TextInput: FC<
           {
             "border-red-500": showError,
             "focus:border-red-500": showError,
-          }
+          },
+          props.className
         )}
       />
       <p
