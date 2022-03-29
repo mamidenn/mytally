@@ -29,8 +29,8 @@ const TallyPage: FC = () => {
   };
 
   useEffect(() => {
-    setIsValid(validateId(addtlId));
-  }, [addtlId]);
+    setIsValid(validateId(addtlId) && !tallyIds.find((e) => e === addtlId));
+  }, [addtlId, tallyIds]);
 
   return (
     <>
