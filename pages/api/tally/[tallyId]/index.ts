@@ -1,12 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Tally } from "hooks/useTally";
 import { clientPromise } from "modules/mongodb";
+import { validateId } from "modules/tally";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (!(req.query.tallyId as string).match("^[a-zA-Z0-9]{1,16}$")) {
+  if (!validateId(req.query.tallyId as string)) {
     res.status(404).json(null);
     return;
   }
