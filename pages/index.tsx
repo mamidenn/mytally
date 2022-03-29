@@ -5,6 +5,7 @@ import Button from "components/Button";
 import { randomInt } from "crypto";
 import { range } from "lodash";
 import TextInput from "components/TextInput";
+import { validateId } from "modules/tally";
 
 export const getServerSideProps: GetServerSideProps = async () => {
   return {
@@ -33,7 +34,7 @@ export const CreateTally: FC<{ randomId: string }> = ({ randomId }) => {
   };
 
   useEffect(() => {
-    setIsValid(tallyId.match("^[a-zA-Z0-9]{1,16}$") !== null);
+    setIsValid(!tallyId || validateId(tallyId));
   }, [tallyId]);
 
   return (
